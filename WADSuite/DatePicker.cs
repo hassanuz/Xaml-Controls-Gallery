@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
 using OpenQA.Selenium;
+using System.Threading;
 
 namespace UWPControls
 {
@@ -36,7 +37,7 @@ namespace UWPControls
             buttonTab.Click();
             var button = session.FindElementByName("DatePicker");
             button.Click();
-
+            Thread.Sleep(1000);
             datePickerElement1 = session.FindElementByName("Pick a date");
             Assert.IsNotNull(datePickerElement1);
             datePickerElement2 = session.FindElementByAccessibilityId("Control2");

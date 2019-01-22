@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
+using System.Threading;
 
 namespace UWPControls
 {
@@ -33,6 +34,7 @@ namespace UWPControls
             buttonTab.Click();
             var button = session.FindElementByName("ToggleButton");
             button.Click();
+            Thread.Sleep(1000);
             toggleButtonElement = session.FindElementByAccessibilityId("Toggle1");
             Assert.IsNotNull(toggleButtonElement);
         }

@@ -25,20 +25,17 @@ namespace UWPControls
     {
         private static WindowsElement buttonElement = null;
 
-
-
         [ClassInitialize]
         public static void ClassInitialize(TestContext context)
         {
             Setup(context);
             //NavigateTo("Buttons", "Button");
-
             var buttonTab = session.FindElementByName("Basic Input");
             buttonTab.Click();
             var button = session.FindElementByName("Button");
             button.Click();
+            Thread.Sleep(1000);
             buttonElement = session.FindElementByAccessibilityId("Button1");
-
             Assert.IsNotNull(buttonElement);
         }
 

@@ -43,7 +43,7 @@ namespace UWPControls
             textBoxElement2 = textBoxes[1];
             Assert.IsNotNull(textBoxElement1);
             Assert.IsNotNull(textBoxElement2);
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
 
         }
 

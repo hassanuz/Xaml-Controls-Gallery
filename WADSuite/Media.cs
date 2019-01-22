@@ -12,7 +12,7 @@ namespace UWPControls
     [TestClass]
     public class Media : Test_Base
     {
-         private static WindowsElement mediaElement1 = null;
+        private static WindowsElement mediaElement1 = null;
         private static WindowsElement mediaElement2 = null;
 
         [ClassInitialize]
@@ -25,15 +25,14 @@ namespace UWPControls
             buttonTab.Click();
             var button = session.FindElementByName("MediaElement");
             button.Click();
-
-
+            Thread.Sleep(1500);
             var mediaElements = session.FindElementsByClassName("MediaElement");
             Assert.IsTrue(mediaElements.Count >= 2);
             mediaElement1 = mediaElements[0];
             mediaElement2 = mediaElements[1];
             Assert.IsNotNull(mediaElement1);
             Assert.IsNotNull(mediaElement2);
-            Thread.Sleep(800);
+            Thread.Sleep(1500);
 
         }
 
@@ -51,7 +50,8 @@ namespace UWPControls
             Assert.IsNotNull(play);
             Assert.IsNotNull(session.FindElementByAccessibilityId("svPanel"));
             play.Click();
-       
+            Thread.Sleep(1000);
+
         }
         [TestMethod]
         [Priority(1)]
@@ -59,13 +59,11 @@ namespace UWPControls
         {
             WindowsElement fullWindow = session.FindElementByAccessibilityId("FullWindowButton");
             Assert.IsNotNull(fullWindow);
-           // Thread.Sleep(500);
-            //should replace with implicit wait in future. 
             fullWindow.Click();
-            Thread.Sleep(800);
+            Thread.Sleep(2000);
             Assert.IsNotNull(session.FindElementByClassName("FullWindowMedia"));
             fullWindow.Click();
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
         }
     }
 

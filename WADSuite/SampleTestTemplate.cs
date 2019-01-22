@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
@@ -19,13 +20,11 @@ namespace UWPControls
         {
             Setup(context);
             //NavigateTo("Selection and picker controls", "RadioButton");
-
             var buttonTab = session.FindElementByName("Basic Input");
             buttonTab.Click();
             var button = session.FindElementByName("RadioButton");
             button.Click();
-
-
+            Thread.Sleep(1000);
             element1 = session.FindElementByAccessibilityId("Element Locator");
             Assert.IsNotNull(element1);
             element2 = session.FindElementByAccessibilityId("Element Locator");

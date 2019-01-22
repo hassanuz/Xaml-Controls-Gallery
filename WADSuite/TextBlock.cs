@@ -36,7 +36,7 @@ namespace UWPControls
             buttonTab.Click();
             var button = session.FindElementByName("TextBlock");
             button.Click();
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
             textBlockElement1 = session.FindElementByName("I am a TextBlock.");
             Assert.IsNotNull(textBlockElement1);
             textBlockElement2 = session.FindElementByName("I am a styled TextBlock.");
@@ -87,6 +87,7 @@ namespace UWPControls
         [TestMethod]
         public void Size()
         {
+            Thread.Sleep(500);
             Assert.IsTrue(textBlockElement1.Size.Width > 0);
             Assert.IsTrue(textBlockElement1.Size.Height > 0);
             Assert.IsTrue(textBlockElement2.Size.Width >= textBlockElement1.Size.Width);

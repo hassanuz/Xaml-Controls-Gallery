@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
 using OpenQA.Selenium;
+using System.Threading;
 
 namespace UWPControls
 {
@@ -31,11 +32,11 @@ namespace UWPControls
         {
             Setup(context);
             //  NavigateTo("Selection and picker controls", "ComboBox");
-
             var buttonTab = session.FindElementByName("Basic Input");
             buttonTab.Click();
             var button = session.FindElementByName("ComboBox");
             button.Click();
+            Thread.Sleep(1000);
             comboBoxElement1 = session.FindElementByAccessibilityId("Combo1");
             Assert.IsNotNull(comboBoxElement1);
             comboBoxElement2 = session.FindElementByAccessibilityId("Combo2");

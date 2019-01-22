@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
 using OpenQA.Selenium;
+using System.Threading;
 
 namespace UWPControls
 {
@@ -35,6 +36,7 @@ namespace UWPControls
             buttonTab.Click();
             var button = session.FindElementByName("Slider");
             button.Click();
+            Thread.Sleep(1000);
             sliderElement1 = session.FindElementByAccessibilityId("Slider1");
             Assert.IsNotNull(sliderElement1);
             sliderElement2 = session.FindElementByAccessibilityId("Slider2");

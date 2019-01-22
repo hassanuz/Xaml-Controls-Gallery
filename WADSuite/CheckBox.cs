@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
+using System.Threading;
 
 namespace UWPControls
 {
@@ -33,7 +34,8 @@ namespace UWPControls
             var buttonTab = session.FindElementByName("Basic Input");
             buttonTab.Click();
             var button = session.FindElementByName("CheckBox");
-            button.Click();        
+            button.Click();
+            Thread.Sleep(1000);
             checkBoxElement1 = session.FindElementByName("Two-state CheckBox");
             checkBoxElement2 = session.FindElementByName("Three-state CheckBox");
             Assert.IsNotNull(checkBoxElement2);

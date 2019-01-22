@@ -39,8 +39,7 @@ namespace UWPControls
             Assert.IsNotNull(progressBarElement);
             clickAndHoldButton = session.FindElementByName("Click and hold");
             Assert.IsNotNull(clickAndHoldButton);
-            Thread.Sleep(500);
-
+            Thread.Sleep(1500);
         }
 
         [ClassCleanup]

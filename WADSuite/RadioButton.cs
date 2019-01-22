@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
+using System.Threading;
 
 namespace UWPControls
 {
@@ -30,13 +31,11 @@ namespace UWPControls
         {
             Setup(context);
             //NavigateTo("Selection and picker controls", "RadioButton");
-
             var buttonTab = session.FindElementByName("Basic Input");
             buttonTab.Click();
             var button = session.FindElementByName("RadioButton");
             button.Click();
-
-
+            Thread.Sleep(1000);
             radioButtonElement1 = session.FindElementByAccessibilityId("Option1RadioButton");
             Assert.IsNotNull(radioButtonElement1);
             radioButtonElement2 = session.FindElementByAccessibilityId("Option2RadioButton");
