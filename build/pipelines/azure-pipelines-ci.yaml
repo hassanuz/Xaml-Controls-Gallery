@@ -1,0 +1,132 @@
+#
+# Continuous Integration (CI)
+# This pipeline builds and validate the app in all supported configurations. If the build was
+# queued to validate a pull request, we build and test only x64.
+#
+
+resources:
+- repo: self
+
+jobs:
+
+- job: Job_1
+  displayName: Build Appx Packages 
+  condition: succeeded()
+  pool:
+    name: Hosted VS2017
+    demands:
+    - msbuild
+    - visualstudio
+
+  variables:
+    BuildPlatform: 'any cpu'
+    BuildConfiguration: 'release'
+
+  steps:
+  - task: NuGetToolInstaller@0
+    displayName: 'Use NuGet 4.4.1'
+    inputs:
+      versionSpec: 4.4.1
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet restore UI Tests'
+    inputs:
+      restoreSolution: UITests/UITests.sln
+
+  - task: NuGetCommand@2
+    displayName: 'NuGet restore Xaml Controls Gallery'
+    inputs:
+      restoreSolution: XamlControlsGallery/XamlControlsGallery.sln
+
+  - task: VSBuild@1
+    displayName: 'Build Xaml Controls Gallery'
+    inputs:
+      solution: XamlControlsGallery/XamlControlsGallery.sln
+      msbuildArgs: '/p:Configuration=Deploy /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\\" /p:UapAppxPackageBuildMode=CI/p:AppxBundlePlatforms="x64" /p:AppxBundle=Always'
+      platform: x64
+      configuration: Release
+
+  - task: VSBuild@1
+    displayName: 'Build solution UITests/UITests.sln'
+    inputs:
+      solution: UITests/UITests.sln
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+
+  - task: PublishSymbols@2
+    displayName: 'Publish symbols path'
+    inputs:
+      SearchPattern: '**\bin\**\*.pdb'
+      PublishSymbols: false
+    continueOnError: true
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      SourceFolder: '$(system.defaultworkingdirectory)'
+      Contents: '**\bin\$(BuildConfiguration)\**'
+      TargetFolder: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
+
+
+- job: Job_2
+  displayName: Run UI Tests
+  dependsOn: Job_1
+  condition: succeeded()
+  pool:
+    name: Hosted Windows 2019 with VS2019
+    demands:
+    - DotNetFramework
+    - vstest
+
+  variables:
+    BuildConfiguration: 'release'
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    displayName: 'Download Build Artifacts'
+    inputs:
+      artifactName: drop
+      downloadPath: '$(build.artifactstagingdirectory)\AppxPackages'
+
+  - task: PowerShell@1
+    displayName: 'Install Cert (release)'
+    inputs:
+      scriptType: inlineScript
+      arguments: '-NonInteractive -Verb RunAs'
+      inlineScript: |  
+       $file = ( Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\AppxPackages\drop\XamlControlsGallery_1.1.1.0_Test\XamlControlsGallery_1.1.1.0_x86.cer )
+       $file | Import-Certificate -CertStoreLocation cert:\LocalMachine\Root
+
+  - task: PowerShell@1
+    displayName: 'Install XAML Controls Gallery Appx Package (release)'
+    inputs:
+      scriptName: '$(Build.ArtifactStagingDirectory)\AppxPackages\drop\XamlControlsGallery_1.1.1.0_Test\Add-AppDevPackage.ps1'
+      arguments: '-NonInteractive -Force:$true  -Verb RunAs'
+
+  - task: WinAppDriver.winappdriver-pipelines-task.winappdriver-pipelines-task.Windows Application Driver@0
+    displayName: 'Start - WinAppDriver'
+    inputs:
+      AgentResolution: 1080p
+
+  - task: VSTest@2
+    displayName: 'VsTest - testAssemblies'
+    inputs:
+      testAssemblyVer2: |  
+       **\*test*.dll
+       $(Build.ArtifactStagingDirectory)\AppxPackages\drop\UITests\bin\$(BuildConfiguration)\UITests.dll
+       !**\obj\**
+      uiTests: true
+      vsTestVersion: 16.0
+      runSettingsFile: UITests/UITests.testsettings
+
+  - task: WinAppDriver.winappdriver-pipelines-task.winappdriver-pipelines-task.Windows Application Driver@0
+    displayName: 'Stop - WinAppDriver'
+    inputs:
+      OperationType: Stop
