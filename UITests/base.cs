@@ -35,7 +35,7 @@ namespace UITests
             {
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
                 appCapabilities.SetCapability("app", AppUIBasicAppId);
-                //appCapabilities.SetCapability("ms:waitForAppLaunch", "30");
+                appCapabilities.SetCapability("ms:waitForAppLaunch", "40");
                 try
                 {
                     session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
